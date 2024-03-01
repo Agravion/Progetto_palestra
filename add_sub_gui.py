@@ -36,9 +36,10 @@ class PlaceholderEntry(ttk.Entry):
 
 
 class Gui:
-    def __init__(self):
-        self.root = ttk.Window(title="Gestione iscritti")
-        self.style = ttk.Style("darkly")
+    def __init__(self, parent):
+        self.parent = parent
+        self.root = parent.root
+        self.style = parent.style
         self.sub_manager = SubscriberManager()
         self.fields = {
             "name": ["Nome", tk.StringVar()],
@@ -102,7 +103,12 @@ class Gui:
             enrolment_course=self.fields["enrolment_course"][1].get()
         )
 
-    def build_widgets(self):
+    def go_back(self):
+        """ Returns in main page. """
+        [widget.pack_forget() for widget in list(self.root.children.values())]
+        self.parent.build_gui_widgets()
+
+    def build_gui_widgets(self):
         for _, v in self.fields.items():
             entry = PlaceholderEntry(
                 self.root,
@@ -129,9 +135,10 @@ class Gui:
         )
         b1.pack(padx=5, pady=10)
 
-    def run(self):
-        self.root.mainloop()
-
-gui = Gui()
-gui.build_widgets()
-gui.run()
+        b1 = ttk.Button(
+            self.root,
+            text="Torna indietro",
+            bootstyle=SUCCESS,
+            command=self.go_back
+        )
+        b1.pack(padx=5, pady=10)
